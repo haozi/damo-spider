@@ -13,7 +13,6 @@ class Spider {
 
   async run () {
     const list = await this.getList(this.startUrl)
-    list.list = list.list.slice(0, 1)
     for (let url of list.list) {
       var { url: zipUrl, title } = await this.getZip(url)
       console.log(zipUrl)
