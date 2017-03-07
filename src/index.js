@@ -13,13 +13,15 @@ class Spider {
 
   async run () {
     const list = await this.getList(this.startUrl)
+    list.list = list.list.slice(0, 1)
     for (let url of list.list) {
-      var zipUrl = await this.getZip(url)
+      var { url: zipUrl, title } = await this.getZip(url)
+      console.log(zipUrl)
       this.downloadList.push(zipUrl)
       const spinner = ora(`downloading ${zipUrl}`).start()
-      this.download(zipUrl)
+      this.download(zipUrl, title)
       await this.sleep(0.5)
-      spinner.succeed(`${zipUrl}`)
+      spinner.succeed(`《${title}》`)
     }
   }
 
@@ -79,14 +81,17 @@ class Spider {
   async getZip (url) {
     const res = await this.crawl(url)
     const href = res.$('a[href$=".zip"]').attr('href')
-    return this.getRelativePath(url, href)
+    return {
+      title: res.$('title').text(),
+      url: this.getRelativePath(url, href)
+    }
   }
 
-  async download (url) {
+  async download (url, title) {
     await this.runBash(`
       mkdir -p ${this.OUTPUT} &&
       cd ${this.OUTPUT} &&
-      curl -O ${url}
+      curl -o "${title}.zip" ${url}
     `)
   }
 
@@ -107,5 +112,5 @@ class Spider {
 }
 
 new Spider({
-  startUrl: 'http://www.108js.com/search.jsp?keyword=canvas&maxresults=500&startat=0'
+  startUrl: 'http://www.108js.com/search.jsp?keyword=canvas&maxresults=1398&startat=0'
 }).run()
