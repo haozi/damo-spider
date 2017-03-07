@@ -1,0 +1,6 @@
+.vscode*
+lib
+node_modules
+*.log
+npm-debug.log*
+download/*.zip
