@@ -15,7 +15,6 @@ class Spider {
     const list = await this.getList(this.startUrl)
     for (let url of list.list) {
       var { url: zipUrl, title } = await this.getZip(url)
-      console.log(zipUrl)
       this.downloadList.push(zipUrl)
       const spinner = ora(`downloading ${zipUrl}`).start()
       this.download(zipUrl, title)
